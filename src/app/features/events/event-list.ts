@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { EventCard } from './event-card';
 import { SearchBar } from './search-bar';
+import { EventService } from '../../core/events.service';
 
 @Component({
   selector: 'app-event-list',
@@ -12,23 +13,37 @@ import { SearchBar } from './search-bar';
       <p class="text-gray-500 mt-2">Searching for: {{ searchQuery() }}</p>
     </div>
 
-    <!-- TODO Mod 2: Wrap in @if (events.isLoading()) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- TODO Mod 2: Use @for to iterate over resource -->
+    @if (events.error()) {
+      <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+        Failed to load events. Is the server running?
+      </div>
+    }
 
-      <!-- Static Placeholders for initial verify -->
-      <app-event-card
-        title="Angular Keynote"
-        image="/images/angular-keynote.png"
-        date="2026-08-10T09:00:00.000Z"
-        (delete)="console.log('Delete clicked')"
-      />
-      <app-event-card title="Signals Deep Dive" image="/images/signals-deep-dive.png" (delete)="console.log('Delete clicked')" />
-    </div>
+    @if (events.isLoading()) {
+      <div class="text-center py-12 text-gray-500 animate-pulse">Loading events...</div>
+    }
+
+    @if (events.hasValue()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (event of events.value(); track event.id) {
+          <app-event-card
+            [title]="event.title"
+            [image]="event.image"
+            [date]="event.date"
+            (delete)="console.log('Delete clicked')"
+          />
+        } @empty {
+          <p class="col-span-3 text-center text-gray-500">No events found.</p>
+        }
+      </div>
+    }
   `,
 })
 export class EventList {
-  readonly console = console
-  searchQuery = signal('')
-  // TODO Mod 2: Inject Service and use resource()
+  private eventsService = inject(EventService);
+
+  readonly console = console;
+  searchQuery = signal('');
+
+  events = this.eventsService.getEvenetsResource(this.searchQuery);
 }
