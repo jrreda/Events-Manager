@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { EventCard } from './event-card';
+import { SearchBar } from './search-bar';
 
 @Component({
   selector: 'app-event-list',
-  imports: [EventCard],
+  imports: [EventCard, SearchBar],
   template: `
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-4">Upcoming Events</h1>
-      <!-- TODO Mod 1: Add SearchBar here -->
+      <app-search-bar [(query)]="searchQuery" />
+      <p class="text-gray-500 mt-2">Searching for: {{ searchQuery() }}</p>
     </div>
 
     <!-- TODO Mod 2: Wrap in @if (events.isLoading()) -->
@@ -27,5 +29,6 @@ import { EventCard } from './event-card';
 })
 export class EventList {
   readonly console = console
+  searchQuery = signal('')
   // TODO Mod 2: Inject Service and use resource()
 }
