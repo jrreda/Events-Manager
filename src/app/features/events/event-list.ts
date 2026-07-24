@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { EventCard } from './event-card';
 import { SearchBar } from './search-bar';
 import { EventService } from '../../core/events.service';
@@ -30,7 +30,7 @@ import { EventService } from '../../core/events.service';
             [title]="event.title"
             [image]="event.image"
             [date]="event.date"
-            (delete)="console.log('Delete clicked')"
+            (delete)="deleteEvent(event.id)"
           />
         } @empty {
           <p class="col-span-3 text-center text-gray-500">No events found.</p>
@@ -41,9 +41,23 @@ import { EventService } from '../../core/events.service';
 })
 export class EventList {
   private eventsService = inject(EventService);
+  private destroyRef = inject(DestroyRef);
 
-  readonly console = console;
   searchQuery = signal('');
 
   events = this.eventsService.getEvenetsResource(this.searchQuery);
+
+  deleteEvent(id: string) {
+    const subscribtion = this.eventsService.deleteEvent(id).subscribe({
+      next: () => {
+        this.events.reload();
+      },
+      error: (err) => {
+        console.error('Delete failed', err);
+        alert('Could not delete event');
+      },
+    });
+
+    this.destroyRef.onDestroy(() => subscribtion.unsubscribe());
+  }
 }

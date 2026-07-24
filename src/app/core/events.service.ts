@@ -13,4 +13,8 @@ export class EventService {
       return q ? `${this.apiUrl}?q=${q}` : this.apiUrl;
     });
   }
+
+  deleteEvent(id: string) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
