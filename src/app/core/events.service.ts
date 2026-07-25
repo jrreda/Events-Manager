@@ -14,6 +14,16 @@ export class EventService {
     });
   }
 
+  getEventResource(id: Signal<string>) {
+    return httpResource<DevFestEvent>(() => {
+      const eventId = id();
+
+      if (!eventId) return undefined;
+
+      return `${this.apiUrl}/${eventId}`;
+    });
+  }
+
   deleteEvent(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
