@@ -50,5 +50,26 @@
       "id": "wdHmxLA"
     }
   ],
-  "tickets": []
+  "tickets": [
+    {
+      "eventId": "1",
+      "id": 1
+    },
+    {
+      "eventId": "1",
+      "id": 2
+    },
+    {
+      "eventId": "1",
+      "id": 3
+    },
+    {
+      "eventId": "1",
+      "id": 4
+    },
+    {
+      "eventId": "1",
+      "id": 5
+    }
+  ]
 }
