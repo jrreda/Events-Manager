@@ -2,11 +2,12 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
 import { DevFestEvent } from '../models/event.model';
 import { Observable } from 'rxjs';
+import { API_URL } from './tokens';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/events';
+  private apiUrl = `${inject(API_URL)}/events`;
 
   getEvenetsResource(query: Signal<string>) {
     return httpResource<DevFestEvent[]>(() => {
