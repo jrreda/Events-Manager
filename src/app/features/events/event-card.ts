@@ -11,7 +11,6 @@ import { RouterLink } from '@angular/router';
     >
       <div class="relative h-48 w-full bg-gray-200">
         <img
-          /* [src]="image()" */
           [ngSrc]="image()"
           width="500"
           height="200"
