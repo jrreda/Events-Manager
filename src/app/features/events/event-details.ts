@@ -75,12 +75,18 @@ Hydration Behavior: The browser downloads the JS for this block ONLY when it ent
               />
             </div>
 
-            <button
-              (click)="addToCart()"
-              class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
-            >
-              Buy Tickets
-            </button>
+            @defer (hydrate on interaction) {
+              <button
+                (click)="addToCart()"
+                class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition active:scale-95"
+              >
+                Buy Ticket
+              </button>
+            } @placeholder {
+              <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold opacity-90">
+                Buy Ticket
+              </button>
+            }
           </div>
         </div>
       }
