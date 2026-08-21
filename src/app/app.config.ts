@@ -3,7 +3,11 @@ import { provideRouter, withComponentInputBinding, withViewTransitions } from '@
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
 import { API_URL } from './core/tokens';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import {
+  provideClientHydration,
+  withEventReplay,
+  withIncrementalHydration,
+} from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +19,7 @@ export const appConfig: ApplicationConfig = {
 
     // We only provide the BASE url.
     // The TICKETS_URL is 'providedIn: root' via its factory.
-    { provide: API_URL, useValue: 'http://localhost:3000' }, provideClientHydration(withEventReplay()),
+    { provide: API_URL, useValue: 'http://localhost:3000' },
+    provideClientHydration(withIncrementalHydration()),
   ],
 };
