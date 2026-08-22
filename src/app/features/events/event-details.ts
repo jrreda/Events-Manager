@@ -5,6 +5,19 @@ import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { CartService } from '../../core/cart.service';
 import { Tab } from '../../shared/tabs/tab';
 import { TabGroup } from '../../shared/tabs/tab-group';
+import {
+  catchError,
+  concatMap,
+  delay,
+  EMPTY,
+  exhaustMap,
+  mergeMap,
+  of,
+  Subject,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-event-details',
@@ -119,7 +132,38 @@ export class EventDetails {
   readonly id = input.required<string>();
   readonly eventResource = this.eventService.getEventResource(this.id);
 
+  private buyBtnClick$ = new Subject<void>();
+
+  // To keep the stream alive, we must catch the error inside the flattening operator (the "Inner Observable").
+  constructor() {
+    this.buyBtnClick$
+      .pipe(
+        exhaustMap(() => {
+          console.log('🔄 Transaction Started...');
+
+          // Simulate a 2-second backend request
+          // return of('Transaction Complete').pipe(delay(2000));
+
+          // Simulate an API Error
+          return throwError(() => new Error('Credit Card Declined')).pipe(
+            delay(500),
+            catchError((err) => {
+              console.warn('⚠️ Handled Error:', err.message);
+              // Return a safe value (Observable) to keep the outer stream going
+              return EMPTY;
+            }),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe({
+        next: (res) => console.log('✅', res),
+        error: (err) => console.error('☠️ Stream Died:', err),
+      });
+  }
+
   addToCart() {
     this.cartService.addTicket(this.id());
+    // this.buyBtnClick$.next();
   }
 }
